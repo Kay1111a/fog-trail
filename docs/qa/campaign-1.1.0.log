@@ -1,0 +1,94 @@
+--- campaign-first.log ---
+Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org
+PASS: stage 02 Creek Steps — all lanterns and shelter reached through movement input (max gap 135).
+PASS: stage 03 Moss Steps — all lanterns and shelter reached through movement input (max gap 140).
+PASS: stage 04 Pine Ledges — all lanterns and shelter reached through movement input (max gap 145).
+PASS: stage 05 Fern Ravine — all lanterns and shelter reached through movement input (max gap 147).
+FAIL: Stage 6 direction 1 at Ledge10 (jumping over thorns), player (1631.0, 548.0), respawns 1.
+Campaign QA: 60 assertions, 1 failures.
+
+--- campaign-second.log ---
+Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org
+PASS: stage 02 Creek Steps — all lanterns and shelter reached through movement input (max gap 144).
+PASS: stage 03 Moss Steps — all lanterns and shelter reached through movement input (max gap 146).
+PASS: stage 04 Pine Ledges — all lanterns and shelter reached through movement input (max gap 149).
+PASS: stage 05 Fern Ravine — all lanterns and shelter reached through movement input (max gap 151).
+PASS: stage 06 Cloud Crossing — all lanterns and shelter reached through movement input (max gap 152).
+PASS: stage 07 Switchback Ridge — all lanterns and shelter reached through movement input (max gap 154).
+PASS: stage 08 Stone Teeth — all lanterns and shelter reached through movement input (max gap 158).
+PASS: stage 09 High Traverse — all lanterns and shelter reached through movement input (max gap 163).
+PASS: stage 10 Summit Run — all lanterns and shelter reached through movement input (max gap 168).
+PASS: stage map, summit backtracking, finale, and reload from save.
+Campaign QA: 114 assertions, 0 failures.
+
+--- render-campaign.log ---
+Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org
+WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.
+PASS: Screenshot directory is available.
+PASS: Rendered menu.
+PASS: Enter activates the focused Play button.
+PASS: Physical D and Space move and jump in the rendered game.
+PASS: Rendered trail.
+PASS: Lantern collision updates progress and starts its audio cue.
+PASS: Movement and jump circles fit after landscape resize to (854, 480).
+PASS: Rendered touch-854.
+PASS: Movement and jump circles fit after landscape resize to (1180, 540).
+PASS: Rendered touch-1180.
+PASS: Physical Escape pauses and clears touch controls.
+PASS: Rendered pause.
+PASS: The ten stage cards fit in the landscape view at (854, 480).
+PASS: Rendered stage-map-854.
+PASS: The ten stage cards fit in the landscape view at (1180, 540).
+PASS: Rendered stage-map-1180.
+
+--- windows-qa.log ---
+Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org
+PASS: game state in all six lantern orders, duplicate touches, gating and reset.
+PASS: floor, ceiling, wall and bidirectional movement.
+PASS: scene contacts in ridge, hollow, crossing order hide each lantern and update the HUD from 0/3 to 3/3.
+PASS: menus, actual collisions, three repeat deaths, locked counts, pause and restart.
+PASS: simulated independent fingers, both release orders, cancel and pause/resume.
+PASS: full playthrough with locked arrival, physical backtracking and shelter completion.
+PASS: Play Again resets the level and a second continuous playthrough completes.
+PASS: physically reached the shelter at 0/3, backtracked to the first crossing and recovered all three lanterns.
+Fog Trail QA: 199 assertions, 0 failures.
+
+--- windows-campaign_qa.log ---
+Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org
+PASS: stage 02 Creek Steps — all lanterns and shelter reached through movement input (max gap 144).
+PASS: stage 03 Moss Steps — all lanterns and shelter reached through movement input (max gap 146).
+PASS: stage 04 Pine Ledges — all lanterns and shelter reached through movement input (max gap 149).
+PASS: stage 05 Fern Ravine — all lanterns and shelter reached through movement input (max gap 151).
+PASS: stage 06 Cloud Crossing — all lanterns and shelter reached through movement input (max gap 152).
+PASS: stage 07 Switchback Ridge — all lanterns and shelter reached through movement input (max gap 154).
+PASS: stage 08 Stone Teeth — all lanterns and shelter reached through movement input (max gap 158).
+PASS: stage 09 High Traverse — all lanterns and shelter reached through movement input (max gap 163).
+PASS: stage 10 Summit Run — all lanterns and shelter reached through movement input (max gap 168).
+PASS: stage map, summit backtracking, finale, and reload from save.
+Campaign QA: 114 assertions, 0 failures.
+
+--- android-qa.log ---
+Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org
+PASS: game state in all six lantern orders, duplicate touches, gating and reset.
+PASS: floor, ceiling, wall and bidirectional movement.
+PASS: scene contacts in ridge, hollow, crossing order hide each lantern and update the HUD from 0/3 to 3/3.
+PASS: menus, actual collisions, three repeat deaths, locked counts, pause and restart.
+PASS: simulated independent fingers, both release orders, cancel and pause/resume.
+PASS: full playthrough with locked arrival, physical backtracking and shelter completion.
+PASS: Play Again resets the level and a second continuous playthrough completes.
+PASS: physically reached the shelter at 0/3, backtracked to the first crossing and recovered all three lanterns.
+Fog Trail QA: 199 assertions, 0 failures.
+
+--- android-campaign_qa.log ---
+Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org
+PASS: stage 02 Creek Steps — all lanterns and shelter reached through movement input (max gap 144).
+PASS: stage 03 Moss Steps — all lanterns and shelter reached through movement input (max gap 146).
+PASS: stage 04 Pine Ledges — all lanterns and shelter reached through movement input (max gap 149).
+PASS: stage 05 Fern Ravine — all lanterns and shelter reached through movement input (max gap 151).
+PASS: stage 06 Cloud Crossing — all lanterns and shelter reached through movement input (max gap 152).
+PASS: stage 07 Switchback Ridge — all lanterns and shelter reached through movement input (max gap 154).
+PASS: stage 08 Stone Teeth — all lanterns and shelter reached through movement input (max gap 158).
+PASS: stage 09 High Traverse — all lanterns and shelter reached through movement input (max gap 163).
+PASS: stage 10 Summit Run — all lanterns and shelter reached through movement input (max gap 168).
+PASS: stage map, summit backtracking, finale, and reload from save.
+Campaign QA: 114 assertions, 0 failures.

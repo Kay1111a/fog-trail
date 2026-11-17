@@ -1,5 +1,29 @@
 # Fog Trail QA Log
 
+## Version 1.1.0 campaign verification
+
+| Area | Result and observed behavior |
+| --- | --- |
+| Campaign progression | **Pass.** The stage map starts with one available stage. Clearing each shelter unlocks exactly one successor. The tenth clear shows **To be continued…** and keeps the campaign replayable. |
+| Parkour routes | **Pass.** The original Stage 1 suite completed three runs. Movement and jump input cleared every gap and thorn crossing in Stages 2–10, collected all three lanterns per stage, and reached each shelter. Summit Run also passed a return journey from its locked shelter. |
+| Saved progress | **Pass.** Saves survived a new game instance. An invalid stored count reopened Stage 1. Replaying earlier courses kept later stages unlocked. |
+| Rendered game | **Pass on Linux.** Keyboard controls, pause, touch layout, and the ten-card map ran at 854 × 480 and 1180 × 540. |
+| Windows and Android resources | **Pass on Linux.** Both export resource sets passed the 199 original checks and the 114 campaign checks. The APK passed v2 and v3 signature checks and 16 KB alignment verification. |
+
+The first campaign run found a tight thorn approach in Stage 6. Moving the thorns farther from the landing added room to start the jump. The rerun cleared the course and continued through Stage 10. See [the campaign run log](docs/qa/campaign-1.1.0.log).
+
+Reproduce the two headless suites from the Godot project root.
+
+```sh
+godot --headless --editor --import --quit
+godot --headless --fixed-fps 60 --script res://tests/qa.gd
+godot --headless --fixed-fps 60 --script res://tests/campaign_qa.gd
+```
+
+The Windows executable is unsigned. The APK uses a new debug signing key. Native Windows play and Android installation and play remain unverified for this version.
+
+## Version 1.0.0 verification
+
 Godot `4.6.3.stable.official.7d41c59c4` · Fog Trail 1.0
 
 **Game and export bugs found — 6. Fixed — 6. Blocked — 0.** Four were High and two were Medium. Zero known Critical or High bugs remain in the checks that ran. Platform checks are listed below.
