@@ -43,7 +43,7 @@ func _physics_process(delta: float) -> void:
 	if requested:
 		_buffer_left = jump_buffer
 	_touch_jump = false
-	if _buffer_left > 0.0 and (grounded or _coyote_left > 0.0):
+	if (requested or _buffer_left > 0.0) and (grounded or _coyote_left > 0.0):
 		velocity.y = -jump_strength
 		_buffer_left = 0.0
 		_coyote_left = 0.0
