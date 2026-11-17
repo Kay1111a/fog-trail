@@ -16,6 +16,7 @@ func _run() -> void:
 		quit(1)
 		return
 	var game := load("res://scenes/main.tscn").instantiate() as FogTrail
+	game.campaign = TrailCampaign.new("")
 	root.add_child(game)
 	await _frames(8)
 	await _snapshot("menu")
@@ -61,6 +62,17 @@ func _run() -> void:
 	await _frames(6)
 	_verify(game.mode == FogTrail.Mode.PAUSED and not game.touch.visible, "Physical Escape pauses and clears touch controls.")
 	await _snapshot("pause")
+	game.open_stage_map()
+	for viewport_size: Vector2i in [Vector2i(854, 480), Vector2i(1180, 540)]:
+		root.size = viewport_size
+		await _frames(12)
+		var visible_rect: Rect2 = game.hud.get_global_rect()
+		var all_fit := true
+		for stage in range(1, TrailStages.COUNT + 1):
+			var card := game.hud._sheet.get_node("Stage%d" % stage) as Button
+			all_fit = all_fit and visible_rect.encloses(card.get_global_rect())
+		_verify(all_fit, "The ten stage cards fit in the landscape view at %s." % str(viewport_size))
+		await _snapshot("stage-map-%s" % str(viewport_size.x))
 	game.go_to_menu()
 	await _frames(6)
 	quit(1 if failed else 0)

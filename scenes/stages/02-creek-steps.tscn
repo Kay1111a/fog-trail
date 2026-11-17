@@ -1,0 +1,117 @@
+[gd_scene load_steps=10 format=3]
+
+[ext_resource type="Script" path="res://scripts/trail_level.gd" id="level"]
+
+[ext_resource type="Script" path="res://scripts/trail_decor.gd" id="decor"]
+
+[ext_resource type="PackedScene" path="res://scenes/trail_platform.tscn" id="trail_platform"]
+
+[ext_resource type="PackedScene" path="res://scenes/trail_hazard.tscn" id="trail_hazard"]
+
+[ext_resource type="PackedScene" path="res://scenes/trail_checkpoint.tscn" id="trail_checkpoint"]
+
+[ext_resource type="PackedScene" path="res://scenes/trail_lantern.tscn" id="trail_lantern"]
+
+[ext_resource type="PackedScene" path="res://scenes/hiker.tscn" id="hiker"]
+
+[ext_resource type="PackedScene" path="res://scenes/trail_shelter.tscn" id="trail_shelter"]
+
+[ext_resource type="PackedScene" path="res://scenes/trail_sign.tscn" id="trail_sign"]
+
+[node name="CreekSteps" type="Node2D"]
+process_mode = 1
+script = ExtResource("level")
+trail_length = 3263.0
+
+[node name="Decor" type="Node2D" parent="."]
+z_index = -2
+script = ExtResource("decor")
+
+[node name="Terrain" type="Node2D" parent="."]
+
+[node name="Ledge01" parent="Terrain" instance=ExtResource("trail_platform")]
+position = Vector2(0, 580)
+size = Vector2(384, 158)
+
+[node name="Ledge02" parent="Terrain" instance=ExtResource("trail_platform")]
+position = Vector2(502, 554)
+size = Vector2(168, 66)
+
+[node name="Ledge03" parent="Terrain" instance=ExtResource("trail_platform")]
+position = Vector2(798, 584)
+size = Vector2(218, 142)
+
+[node name="Ledge04" parent="Terrain" instance=ExtResource("trail_platform")]
+position = Vector2(1128, 540)
+size = Vector2(124, 24)
+bridge = true
+
+[node name="Ledge05" parent="Terrain" instance=ExtResource("trail_platform")]
+position = Vector2(1373, 518)
+size = Vector2(138, 52)
+
+[node name="Ledge06" parent="Terrain" instance=ExtResource("trail_platform")]
+position = Vector2(1644, 558)
+size = Vector2(254, 140)
+
+[node name="Ledge07" parent="Terrain" instance=ExtResource("trail_platform")]
+position = Vector2(2017, 535)
+size = Vector2(144, 22)
+bridge = true
+
+[node name="Ledge08" parent="Terrain" instance=ExtResource("trail_platform")]
+position = Vector2(2290, 569)
+size = Vector2(175, 88)
+
+[node name="Ledge09" parent="Terrain" instance=ExtResource("trail_platform")]
+position = Vector2(2597, 548)
+size = Vector2(172, 62)
+
+[node name="Ledge10" parent="Terrain" instance=ExtResource("trail_platform")]
+position = Vector2(2913, 584)
+size = Vector2(350, 144)
+
+[node name="Lanterns" type="Node2D" parent="."]
+
+[node name="Lantern1" parent="Lanterns" instance=ExtResource("trail_lantern")]
+position = Vector2(907, 555)
+lantern_id = &"stage_2_1"
+
+[node name="Lantern2" parent="Lanterns" instance=ExtResource("trail_lantern")]
+position = Vector2(2089, 506)
+lantern_id = &"stage_2_2"
+
+[node name="Lantern3" parent="Lanterns" instance=ExtResource("trail_lantern")]
+position = Vector2(2683, 519)
+lantern_id = &"stage_2_3"
+
+[node name="Checkpoints" type="Node2D" parent="."]
+
+[node name="TrailCheckpoint" parent="Checkpoints" instance=ExtResource("trail_checkpoint")]
+position = Vector2(1771, 558)
+
+[node name="Hazards" type="Node2D" parent="."]
+
+[node name="Signs" type="Node2D" parent="."]
+
+[node name="TrailSign" parent="Signs" instance=ExtResource("trail_sign")]
+position = Vector2(204, 580)
+directions = "LONGER CREEK JUMPS"
+branch_sign = false
+
+[node name="ShelterSign" parent="Signs" instance=ExtResource("trail_sign")]
+position = Vector2(2984, 584)
+directions = "SHELTER"
+branch_sign = false
+
+[node name="Trailhead" type="Marker2D" parent="."]
+position = Vector2(124, 578)
+
+[node name="Shelter" parent="." instance=ExtResource("trail_shelter")]
+position = Vector2(3140, 584)
+
+[node name="Hiker" parent="." instance=ExtResource("hiker")]
+position = Vector2(124, 578)
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(640, 360)

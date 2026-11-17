@@ -7,6 +7,8 @@ signal menu_requested
 signal pause_requested
 signal resume_requested
 signal restart_requested
+signal map_requested
+signal stage_requested(stage: int)
 
 const BODY := preload("res://assets/fonts/Inter-Variable.ttf")
 const DISPLAY := preload("res://assets/fonts/InstrumentSerif-Regular.ttf")
@@ -17,6 +19,7 @@ const WALL := Color(0.059, 0.129, 0.153, 0.94)
 
 var _sheet: Control
 var _hud: Control
+var _stage_label: Label
 var _number: Label
 var _pips: HBoxContainer
 var _pause_button: Button
@@ -54,10 +57,16 @@ func _build_hud() -> void:
 	chip.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	chip.position = Vector2(27, 24)
 	_hud.add_child(chip)
+	var details := VBoxContainer.new()
+	details.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	details.add_theme_constant_override("separation", 3)
+	chip.add_child(details)
+	_stage_label = _label("", 15, BODY, GOLD)
+	details.add_child(_stage_label)
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 14)
 	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	chip.add_child(row)
+	details.add_child(row)
 	_number = _label("Lanterns 0/3", 19, BODY, INK)
 	row.add_child(_number)
 	_pips = HBoxContainer.new()
@@ -191,7 +200,7 @@ func _dim(parent: Control) -> void:
 	parent.add_child(dim)
 	dim.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 
-func show_main_menu() -> void:
+func show_main_menu(cleared: int) -> void:
 	_hud.hide()
 	var root := _new_sheet()
 	_fade_left(root)
@@ -202,18 +211,83 @@ func show_main_menu() -> void:
 
 	var title := _label("Fog Trail", 142, DISPLAY, INK)
 	stack.add_child(title)
-	stack.add_child(_label("Collect three lanterns to open\nthe trail shelter.", 24, BODY, Color("#cfddd1")))
+	stack.add_child(_label("Collect lanterns and climb ten mountain stages.", 24, BODY, Color("#cfddd1")))
 
 	var actions := HBoxContainer.new()
 	actions.add_theme_constant_override("separation", 13)
 	stack.add_child(actions)
-	var play := _button("Play", true, 146)
+	var all_cleared: bool = cleared == TrailStages.COUNT
+	var play: Button
+	if not all_cleared:
+		play = _button("Play" if cleared == 0 else "Continue", true, 146)
+		actions.add_child(play)
+		play.pressed.connect(func() -> void: play_requested.emit())
+	var map_button := _button("Stage Map", all_cleared, 146)
+	actions.add_child(map_button)
+	map_button.pressed.connect(func() -> void: map_requested.emit())
 	var controls := _button("Controls", false, 146)
-	actions.add_child(play)
 	actions.add_child(controls)
-	play.pressed.connect(func() -> void: play_requested.emit())
 	controls.pressed.connect(func() -> void: controls_requested.emit())
-	play.grab_focus()
+	var focused: Button = map_button if all_cleared else play
+	focused.grab_focus()
+
+func show_stage_map(campaign: TrailCampaign) -> void:
+	_hud.hide()
+	var root := _new_sheet()
+	_dim(root)
+	var title := _label("Stage Map", 78, DISPLAY, INK)
+	title.position = Vector2(118, 62)
+	root.add_child(title)
+	var progress := _label("%d of %d stages cleared" % [campaign.cleared_count, TrailStages.COUNT], 20, BODY, SOFT)
+	progress.position = Vector2(121, 156)
+	root.add_child(progress)
+
+	var route := Line2D.new()
+	route.width = 3.0
+	route.default_color = Color("#597772")
+	route.antialiased = true
+	root.add_child(route)
+	var open_route := Line2D.new()
+	open_route.width = 4.0
+	open_route.default_color = GOLD
+	open_route.antialiased = true
+	root.add_child(open_route)
+
+	var next_stage_button: Button
+	for index in range(TrailStages.COUNT):
+		var stage: int = index + 1
+		var column: int = index if index < 5 else 9 - index
+		var point := Vector2(118 + column * 216, 231 if index < 5 else 397)
+		var center: Vector2 = point + Vector2(90, 54)
+		route.add_point(center)
+		var unlocked: bool = campaign.can_start(stage)
+		if unlocked:
+			open_route.add_point(center)
+		var next: bool = stage == campaign.next_available() and stage > campaign.cleared_count
+		var status := "Locked"
+		if stage <= campaign.cleared_count:
+			status = "Cleared"
+		elif unlocked:
+			status = "Next"
+		var card := _button("%02d  ·  %s\n%s" % [stage, status, TrailStages.NAMES[index]], next, 180)
+		card.name = "Stage%d" % stage
+		card.position = point
+		card.custom_minimum_size.y = 108
+		card.size = Vector2(180, 108)
+		card.add_theme_font_size_override("font_size", 16)
+		card.add_theme_color_override("font_disabled_color", Color("#91a6a1"))
+		card.add_theme_stylebox_override("disabled", _style(Color("#193138"), Color("#45625e"), 10, 8, 10))
+		card.disabled = not unlocked
+		card.pressed.connect(stage_requested.emit.bind(stage))
+		root.add_child(card)
+		if stage == campaign.next_available():
+			next_stage_button = card
+
+	var back := _button("Main Menu", false, 165)
+	back.position = Vector2(118, 565)
+	root.add_child(back)
+	back.pressed.connect(menu_requested.emit)
+	next_stage_button.grab_focus()
 
 func show_controls() -> void:
 	_hud.hide()
@@ -226,10 +300,15 @@ func show_controls() -> void:
 	var back := _add_button(column, "Back", true, func() -> void: menu_requested.emit())
 	back.grab_focus()
 
-func begin_stage(total: int, mobile: bool) -> void:
+func begin_stage(stage: int, total: int, mobile: bool) -> void:
 	show_stage()
+	_stage_label.text = "Stage %02d  ·  %s" % [stage, TrailStages.NAMES[stage - 1]]
 	set_lanterns(0, total)
-	show_feedback("Use the arrows to move and jump." if mobile else "A / D or arrows to move · Space to jump", 5.0)
+	if stage == 1:
+		show_feedback("Use the arrows to move and jump." if mobile else "A / D or arrows to move · Space to jump", 5.0)
+	else:
+		_message_timer.stop()
+		_toast.hide()
 
 func show_stage() -> void:
 	_pause_finger = -1
@@ -266,13 +345,22 @@ func show_pause() -> void:
 	_add_button(column, "Main Menu", false, func() -> void: menu_requested.emit())
 	resume.grab_focus()
 
-func show_complete() -> void:
+func show_complete(stage: int, save_failed: bool) -> void:
 	_hud.hide()
 	var root := _new_sheet()
 	_dim(root)
-	var column := _box(root, Control.PRESET_CENTER, Rect2(-253, -162, 506, 324))
-	column.add_child(_label("Level Complete", 68, DISPLAY, INK))
-	column.add_child(_label("You made it to the trail shelter.", 19, BODY, SOFT))
-	var replay := _add_button(column, "Play Again", true, func() -> void: play_requested.emit())
-	_add_button(column, "Main Menu", false, func() -> void: menu_requested.emit())
-	replay.grab_focus()
+	var column := _box(root, Control.PRESET_CENTER, Rect2(-270, -213, 540, 426))
+	var finale: bool = stage == TrailStages.COUNT
+	var title := "To be continued…" if finale else "Stage %d cleared" % stage
+	column.add_child(_label(title, 63, DISPLAY, INK))
+	var detail := "All %d stages cleared" % TrailStages.COUNT if finale else "Next  ·  %s" % TrailStages.NAMES[stage]
+	column.add_child(_label(detail, 19, BODY, SOFT))
+	if save_failed:
+		column.add_child(_label("Progress could not be saved on this device.", 15, BODY, GOLD))
+	var next: Button
+	if not finale:
+		next = _add_button(column, "Next Stage", true, stage_requested.emit.bind(stage + 1))
+	var replay := _add_button(column, "Play Again", finale, restart_requested.emit)
+	_add_button(column, "Stage Map", false, map_requested.emit)
+	var focused: Button = replay if finale else next
+	focused.grab_focus()

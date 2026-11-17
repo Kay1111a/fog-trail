@@ -21,6 +21,7 @@ func _run() -> void:
 	_test_input_map()
 	await _test_collision_bench()
 	game = MAIN.instantiate() as FogTrail
+	game.campaign = TrailCampaign.new("")
 	root.add_child(game)
 	await _frames(3)
 	await _test_pickup_display()

@@ -1,9 +1,8 @@
 class_name FogTrail
 extends Node
 
-enum Mode { MAIN, CONTROLS, PLAYING, PAUSED, COMPLETE }
+enum Mode { MAIN, CONTROLS, PLAYING, PAUSED, COMPLETE, MAP }
 
-const STAGE := preload("res://scenes/trail.tscn")
 const PICKUP_SOUND := preload("res://assets/audio/lantern.wav")
 const CHECKPOINT_SOUND := preload("res://assets/audio/checkpoint.wav")
 const COMPLETE_SOUND := preload("res://assets/audio/complete.wav")
@@ -17,11 +16,16 @@ const COMPLETE_SOUND := preload("res://assets/audio/complete.wav")
 var mode: Mode = Mode.MAIN
 var level: TrailLevel
 var use_touch := false
+var campaign := TrailCampaign.new()
+var current_stage: int = 1
 
 func _ready() -> void:
 	use_touch = OS.has_feature("mobile") or "--touch-controls" in OS.get_cmdline_user_args()
-	hud.play_requested.connect(start_level)
-	hud.restart_requested.connect(start_level)
+	campaign.load_progress()
+	hud.play_requested.connect(_continue_campaign)
+	hud.restart_requested.connect(_restart_level)
+	hud.map_requested.connect(open_stage_map)
+	hud.stage_requested.connect(start_level)
 	hud.menu_requested.connect(go_to_menu)
 	hud.controls_requested.connect(_open_controls)
 	hud.pause_requested.connect(pause_game)
@@ -44,8 +48,10 @@ func _unhandled_input(event: InputEvent) -> void:
 			pause_game()
 		Mode.PAUSED:
 			resume_game()
-		Mode.CONTROLS:
+		Mode.CONTROLS, Mode.MAP:
 			go_to_menu()
+		Mode.COMPLETE:
+			open_stage_map()
 		_:
 			return
 	get_viewport().set_input_as_handled()
@@ -54,12 +60,24 @@ func _notification(what: int) -> void:
 	if what == NOTIFICATION_APPLICATION_FOCUS_OUT and mode == Mode.PLAYING and is_node_ready():
 		pause_game()
 
-func start_level() -> void:
+func _continue_campaign() -> void:
+	if campaign.cleared_count == TrailStages.COUNT:
+		open_stage_map()
+	else:
+		start_level(campaign.next_available())
+
+func _restart_level() -> void:
+	start_level(current_stage)
+
+func start_level(stage: int = 1) -> void:
+	if not campaign.can_start(stage):
+		return
 	_clear_level()
+	current_stage = stage
 	mode = Mode.PLAYING
 	get_tree().paused = false
 	backdrop.menu_view = false
-	level = STAGE.instantiate() as TrailLevel
+	level = TrailStages.SCENES[stage - 1].instantiate() as TrailLevel
 	world.add_child(level)
 	level.lanterns_changed.connect(hud.set_lanterns)
 	level.feedback.connect(hud.show_feedback)
@@ -67,7 +85,7 @@ func start_level() -> void:
 	level.checkpoint_activated.connect(_play_cue.bind(CHECKPOINT_SOUND))
 	level.respawned.connect(touch.cancel_touches)
 	level.completed.connect(_finish)
-	hud.begin_stage(level.progress.total(), use_touch)
+	hud.begin_stage(stage, level.progress.total(), use_touch)
 	touch.set_active(use_touch)
 
 func _open_controls() -> void:
@@ -79,7 +97,14 @@ func go_to_menu() -> void:
 	mode = Mode.MAIN
 	get_tree().paused = false
 	backdrop.menu_view = true
-	hud.show_main_menu()
+	hud.show_main_menu(campaign.cleared_count)
+
+func open_stage_map() -> void:
+	_clear_level()
+	mode = Mode.MAP
+	get_tree().paused = false
+	backdrop.menu_view = true
+	hud.show_stage_map(campaign)
 
 func pause_game() -> void:
 	if mode != Mode.PLAYING:
@@ -104,7 +129,8 @@ func _finish() -> void:
 	_quiet_controls()
 	get_tree().paused = true
 	_play_cue(COMPLETE_SOUND)
-	hud.show_complete()
+	campaign.record_clear(current_stage)
+	hud.show_complete(current_stage, campaign.save_error != OK)
 
 func _clear_level() -> void:
 	_quiet_controls()
