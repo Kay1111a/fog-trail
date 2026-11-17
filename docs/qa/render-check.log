@@ -1,0 +1,17 @@
+Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org
+WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.
+     at: set_use_vsync (platform/linuxbsd/x11/gl_manager_x11.cpp:364)
+OpenGL API 4.5 (Core Profile) Mesa 25.0.7-2+deb13u1 - Compatibility - Using Device: Mesa - llvmpipe (LLVM 19.1.7, 256 bits)
+
+PASS: Screenshot directory is available.
+PASS: Rendered menu.
+PASS: Enter activates the focused Play button.
+PASS: Physical D and Space move and jump in the rendered game.
+PASS: Rendered trail.
+PASS: Lantern collision updates progress and starts its audio cue.
+PASS: Movement and jump circles fit after landscape resize to (854, 480).
+PASS: Rendered touch-854.
+PASS: Movement and jump circles fit after landscape resize to (1180, 540).
+PASS: Rendered touch-1180.
+PASS: Physical Escape pauses and clears touch controls.
+PASS: Rendered pause.

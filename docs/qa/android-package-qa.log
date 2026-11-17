@@ -1,0 +1,11 @@
+Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org
+
+PASS: game state in all six lantern orders, duplicate touches, gating and reset.
+PASS: floor, ceiling, wall and bidirectional movement.
+PASS: scene contacts in ridge, hollow, crossing order hide each lantern and update the HUD from 0/3 to 3/3.
+PASS: menus, actual collisions, three repeat deaths, locked counts, pause and restart.
+PASS: simulated independent fingers, both release orders, cancel and pause/resume.
+PASS: full playthrough with locked arrival, physical backtracking and shelter completion.
+PASS: Play Again resets the level and a second continuous playthrough completes.
+PASS: physically reached the shelter at 0/3, backtracked to the first crossing and recovered all three lanterns.
+Fog Trail QA: 199 assertions, 0 failures.
