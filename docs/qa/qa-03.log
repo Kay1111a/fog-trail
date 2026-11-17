@@ -1,0 +1,11 @@
+Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org
+PASS: game state in all six lantern orders, duplicate touches, gating and reset.
+PASS: floor, ceiling, wall and bidirectional movement.
+PASS: menus, actual collisions, three repeat deaths, locked counts, pause and restart.
+PASS: simulated independent fingers, both release orders, cancel and pause/resume.
+PASS: full playthrough with locked arrival, physical backtracking and shelter completion.
+PASS: Play Again resets the level and a second continuous playthrough completes.
+Fog Trail QA: 175 assertions, 0 failures.
+WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
+ERROR: 1 resources still in use at exit.
+Resource still in use: res://assets/audio/complete.wav (AudioStreamWAV)

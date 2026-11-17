@@ -102,7 +102,7 @@ size = Vector2(265, 43)
 
 [node name="UpperBridge" parent="Terrain" instance=ExtResource("trail_platform")]
 position = Vector2(6526, 505)
-size = Vector2(192, 18)
+size = Vector2(152, 18)
 bridge = true
 
 [node name="FarBank" parent="Terrain" instance=ExtResource("trail_platform")]
@@ -111,11 +111,11 @@ size = Vector2(365, 115)
 
 [node name="HollowFloor" parent="Terrain" instance=ExtResource("trail_platform")]
 position = Vector2(6405, 630)
-size = Vector2(235, 85)
+size = Vector2(333, 85)
 
 [node name="HollowReturn" parent="Terrain" instance=ExtResource("trail_platform")]
-position = Vector2(6690, 572)
-size = Vector2(109, 17)
+position = Vector2(6751, 572)
+size = Vector2(58, 17)
 bridge = true
 
 [node name="LookoutBank" parent="Terrain" instance=ExtResource("trail_platform")]
