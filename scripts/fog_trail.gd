@@ -109,6 +109,7 @@ func _finish() -> void:
 func _clear_level() -> void:
 	_quiet_controls()
 	sounds.stop()
+	sounds.stream = null
 	if is_instance_valid(level):
 		world.remove_child(level)
 		level.queue_free()
@@ -128,5 +129,7 @@ func _jump_on_touch() -> void:
 		level.player.request_touch_jump()
 
 func _play_cue(clip: AudioStream) -> void:
+	if DisplayServer.get_name() == "headless":
+		return
 	sounds.stream = clip
 	sounds.play()
