@@ -196,7 +196,7 @@ func show_main_menu() -> void:
 	actions.add_child(controls)
 	play.pressed.connect(func() -> void: play_requested.emit())
 	controls.pressed.connect(func() -> void: controls_requested.emit())
-	play.grab_focus.call_deferred()
+	play.grab_focus()
 
 func show_controls() -> void:
 	_hud.hide()
@@ -207,7 +207,7 @@ func show_controls() -> void:
 	column.add_child(_label("Move   ·   A / D or Left / Right\nJump   ·   Space\nPause   ·   Esc", 21, BODY, INK))
 	column.add_child(_label("On Android, use the arrows and jump button.\nYou can move and jump together.", 18, BODY, SOFT))
 	var back := _add_button(column, "Back", true, func() -> void: menu_requested.emit())
-	back.grab_focus.call_deferred()
+	back.grab_focus()
 
 func begin_stage(total: int, mobile: bool) -> void:
 	show_stage()
@@ -246,7 +246,7 @@ func show_pause() -> void:
 	var resume := _add_button(column, "Resume", true, func() -> void: resume_requested.emit())
 	_add_button(column, "Restart Level", false, func() -> void: restart_requested.emit())
 	_add_button(column, "Main Menu", false, func() -> void: menu_requested.emit())
-	resume.grab_focus.call_deferred()
+	resume.grab_focus()
 
 func show_complete() -> void:
 	_hud.hide()
@@ -257,4 +257,4 @@ func show_complete() -> void:
 	column.add_child(_label("You made it to the trail shelter.", 19, BODY, SOFT))
 	var replay := _add_button(column, "Play Again", true, func() -> void: play_requested.emit())
 	_add_button(column, "Main Menu", false, func() -> void: menu_requested.emit())
-	replay.grab_focus.call_deferred()
+	replay.grab_focus()
