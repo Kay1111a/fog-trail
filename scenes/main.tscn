@@ -1,0 +1,44 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/fog_trail.gd" id="game"]
+[ext_resource type="Script" path="res://scripts/forest_backdrop.gd" id="sky"]
+[ext_resource type="Script" path="res://scripts/trail_hud.gd" id="hud"]
+[ext_resource type="Script" path="res://scripts/touch_controls.gd" id="touch"]
+
+[node name="FogTrail" type="Node"]
+process_mode = 3
+script = ExtResource("game")
+
+[node name="Backdrop" type="CanvasLayer" parent="."]
+layer = -5
+
+[node name="ForestBackdrop" type="Node2D" parent="Backdrop"]
+script = ExtResource("sky")
+
+[node name="World" type="Node2D" parent="."]
+
+[node name="Sounds" type="AudioStreamPlayer" parent="."]
+volume_db = -8.0
+
+[node name="Interface" type="CanvasLayer" parent="."]
+layer = 5
+
+[node name="TouchControls" type="Control" parent="Interface"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("touch")
+
+[node name="HUD" type="Control" parent="Interface"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("hud")
