@@ -19,12 +19,29 @@ var _sheet: Control
 var _hud: Control
 var _number: Label
 var _pips: HBoxContainer
+var _pause_button: Button
+var _pause_finger := -1
 var _toast: PanelContainer
 var _toast_text: Label
 var _message_timer: Timer
 
 func _ready() -> void:
 	_build_hud()
+
+func _input(event: InputEvent) -> void:
+	if not event is InputEventScreenTouch or not _pause_button.is_visible_in_tree():
+		return
+	# GUI mouse emulation tracks one finger. Accept a second finger on Pause directly.
+	var inside: bool = _pause_button.get_global_rect().has_point(event.position)
+	if event.pressed and not event.canceled and inside and _pause_finger == -1:
+		_pause_finger = event.index
+	elif event.index == _pause_finger and not event.pressed:
+		_pause_finger = -1
+		if inside and not event.canceled:
+			pause_requested.emit()
+	else:
+		return
+	get_viewport().set_input_as_handled()
 
 func _build_hud() -> void:
 	_hud = Control.new()
@@ -48,15 +65,15 @@ func _build_hud() -> void:
 	_pips.add_theme_constant_override("separation", 6)
 	row.add_child(_pips)
 
-	var pause := _button("Pause", false, 112)
-	_hud.add_child(pause)
-	pause.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
-	pause.offset_left = -143
-	pause.offset_right = -28
-	pause.offset_top = 24
-	pause.offset_bottom = 74
-	pause.focus_mode = Control.FOCUS_NONE
-	pause.pressed.connect(func() -> void: pause_requested.emit())
+	_pause_button = _button("Pause", false, 112)
+	_hud.add_child(_pause_button)
+	_pause_button.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
+	_pause_button.offset_left = -143
+	_pause_button.offset_right = -28
+	_pause_button.offset_top = 24
+	_pause_button.offset_bottom = 74
+	_pause_button.focus_mode = Control.FOCUS_NONE
+	_pause_button.pressed.connect(func() -> void: pause_requested.emit())
 
 	_toast = PanelContainer.new()
 	_toast.add_theme_stylebox_override("panel", _style(WALL, Color("#77958b"), 11, 17, 10))
@@ -215,6 +232,7 @@ func begin_stage(total: int, mobile: bool) -> void:
 	show_feedback("Use the arrows to move and jump." if mobile else "A / D or arrows to move · Space to jump", 5.0)
 
 func show_stage() -> void:
+	_pause_finger = -1
 	_clear_sheet()
 	_hud.show()
 
