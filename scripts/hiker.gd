@@ -15,6 +15,9 @@ var _buffer_left: float = 0.0
 var _facing: float = 1.0
 var _stride: float = 0.0
 var _step: float = 0.0
+var _coat_edge := _rounded_fill(Color("#162a32"))
+var _coat := _rounded_fill(Color("#e1a85f"))
+var _pack := _rounded_fill(Color("#435d56"))
 
 func request_touch_jump() -> void:
 	_touch_jump = true
@@ -62,7 +65,6 @@ func _physics_process(delta: float) -> void:
 
 func _draw() -> void:
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2(_facing, 1))
-	var jacket := Color("#e1a85f")
 	var jacket_shade := Color("#ae6f46")
 	var boots := Color("#1b2830")
 	var edge := Color("#152932")
@@ -72,10 +74,10 @@ func _draw() -> void:
 	draw_line(Vector2(3, -17), step_b, Color("#64716a"), 7.0, true)
 	draw_line(step_a + Vector2(-3, 0), step_a + Vector2(4, 0), boots, 5.0, true)
 	draw_line(step_b + Vector2(-2, 0), step_b + Vector2(5, 0), boots, 5.0, true)
-	draw_style_box(_coat_outline(), Rect2(-12, -34, 24, 24))
-	draw_style_box(_coat_fill(jacket), Rect2(-10, -33, 19, 21))
+	draw_style_box(_coat_edge, Rect2(-12, -34, 24, 24))
+	draw_style_box(_coat, Rect2(-10, -33, 19, 21))
 	draw_line(Vector2(2, -30), Vector2(7, -19) + Vector2(_step * 3.0, 0), jacket_shade, 5.0, true)
-	draw_style_box(_coat_fill(Color("#435d56")), Rect2(-16, -35, 9, 19))
+	draw_style_box(_pack, Rect2(-16, -35, 9, 19))
 	draw_line(Vector2(-13, -30), Vector2(-13, -19), Color("#88a391"), 2.0, true)
 	draw_circle(Vector2(2, -40), 9.0, edge, true, -1.0, true)
 	draw_circle(Vector2(3, -40), 7.0, Color("#dcb996"), true, -1.0, true)
@@ -84,10 +86,7 @@ func _draw() -> void:
 	draw_circle(Vector2(8, -37), 1.25, edge, true, -1.0, true)
 	draw_line(Vector2(-5, -34), Vector2(9, -34), Color("#e8d2a5"), 2.0, true)
 
-func _coat_outline() -> StyleBoxFlat:
-	return _coat_fill(Color("#162a32"))
-
-func _coat_fill(color: Color) -> StyleBoxFlat:
+func _rounded_fill(color: Color) -> StyleBoxFlat:
 	var style := StyleBoxFlat.new()
 	style.bg_color = color
 	style.set_corner_radius_all(4)

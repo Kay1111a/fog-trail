@@ -14,10 +14,12 @@ To play from source, clone or download this repository. In Godot Project Manager
 | --- | --- | --- |
 | Move | A / D or Left / Right | Two arrows at the bottom left |
 | Jump | Space | Up arrow at the bottom right |
-| Pause | Esc | Pause at the top right |
-| Resume | Esc or Resume | Resume |
+| Pause | Esc | Pause at the top right or Android Back |
+| Resume | Esc or Resume | Resume or Android Back |
 
 You can hold a direction and tap jump on Android. Falling into a pit or touching thorns returns you to the last checkpoint or the trailhead. Lanterns stay collected on respawn. **Restart Level** and **Play Again** reset the whole attempt.
+
+Switching away from the game pauses the current attempt. On return, resume with fresh touch input. Checkpoint and shelter messages keep their remaining display time during a pause. Android Back returns to the stage map after a clear and exits from the title screen.
 
 ## Campaign progress
 

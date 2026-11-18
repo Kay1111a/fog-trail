@@ -99,6 +99,7 @@ func _build_hud() -> void:
 	_toast.add_child(_toast_text)
 	_message_timer = Timer.new()
 	_message_timer.one_shot = true
+	_message_timer.process_mode = Node.PROCESS_MODE_PAUSABLE
 	_message_timer.timeout.connect(_toast.hide)
 	add_child(_message_timer)
 	_toast.hide()
@@ -296,7 +297,7 @@ func show_controls() -> void:
 	var column := _box(sheet, Control.PRESET_CENTER, Rect2(-260, -205, 520, 410))
 	column.add_child(_label("Controls", 63, DISPLAY, INK))
 	column.add_child(_label("Move   ·   A / D or Left / Right\nJump   ·   Space\nPause   ·   Esc", 21, BODY, INK))
-	column.add_child(_label("On Android, use the arrows and jump button.\nYou can move and jump together.", 18, BODY, SOFT))
+	column.add_child(_label("On Android, hold an arrow and tap jump.\nUse Back to pause or resume.", 18, BODY, SOFT))
 	var back := _add_button(column, "Back", true, func() -> void: menu_requested.emit())
 	back.grab_focus()
 

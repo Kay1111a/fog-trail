@@ -1,5 +1,27 @@
 # Fog Trail QA Log
 
+## Mobile pause and Back controls
+
+| ID and severity | Reproduction | Previous behavior | Fix and retest |
+|---|---|---|---|
+| FT-007 · High | 1. Start a stage. 2. Send the Android system Back request. | Godot's automatic quit was enabled and the running stage had no Back handler. | `project.godot` and `scripts/fog_trail.gd` route Back through the same navigation as Esc. Back paused and resumed the stage, closed the map and controls, opened the map from the finale and exited from the title. |
+| FT-008 · High | 1. Pick up a lantern and hold a direction. 2. Deliver the application suspension notification without a preceding focus event. | The game stayed in its playing state. | `scripts/fog_trail.gd` pauses on suspension. With a simulated held finger, position and lantern count survived suspension and the movement input cleared. |
+| FT-009 · Medium | 1. Display checkpoint feedback. 2. Pause longer than the message duration. 3. Resume. | The message had expired while the pause screen covered it. | The feedback timer in `scripts/trail_hud.gd` follows gameplay time. The message was visible after resuming and expired during play. |
+
+Godot 4.6.3 ran 213 gameplay assertions and 115 campaign assertions with zero failures against the source and against each resource pack. The campaign checks reached all ten shelters, replayed the summit and reopened the saved campaign. An additional title-screen check sent a Back request and observed the process exit. The runs used Linux headless Godot with simulated touch, window Back and application suspension. Native Windows and Android playtests of this revision are outstanding.
+
+Use the two test commands below for the source. To repeat the resource-pack runs, create a `build` folder in the project root and run the following commands in a POSIX shell.
+
+```sh
+godot --headless --export-pack "Windows Desktop" build/windows.pck
+godot --headless --export-pack "Android APK" build/android.pck
+for pack in build/windows.pck build/android.pck; do
+    for suite in qa campaign_qa; do
+        godot --headless --fixed-fps 60 --main-pack "$pack" --script "$PWD/tests/$suite.gd" || exit 1
+    done
+done
+```
+
 ## Version 1.1.0 campaign verification
 
 | Area | Result and observed behavior |

@@ -22,6 +22,7 @@ var current_stage: int = 1
 func _ready() -> void:
 	use_touch = OS.has_feature("mobile") or "--touch-controls" in OS.get_cmdline_user_args()
 	campaign.load_progress()
+	get_window().go_back_requested.connect(_on_system_back)
 	hud.play_requested.connect(_continue_campaign)
 	hud.restart_requested.connect(_restart_level)
 	hud.map_requested.connect(open_stage_map)
@@ -41,8 +42,14 @@ func _process(_delta: float) -> void:
 		backdrop.travel = 0.0
 
 func _unhandled_input(event: InputEvent) -> void:
-	if not event.is_action_pressed(&"pause"):
-		return
+	if event.is_action_pressed(&"pause") and _navigate_back():
+		get_viewport().set_input_as_handled()
+
+func _on_system_back() -> void:
+	if not _navigate_back():
+		get_tree().quit()
+
+func _navigate_back() -> bool:
 	match mode:
 		Mode.PLAYING:
 			pause_game()
@@ -53,12 +60,14 @@ func _unhandled_input(event: InputEvent) -> void:
 		Mode.COMPLETE:
 			open_stage_map()
 		_:
-			return
-	get_viewport().set_input_as_handled()
+			return false
+	return true
 
 func _notification(what: int) -> void:
-	if what == NOTIFICATION_APPLICATION_FOCUS_OUT and mode == Mode.PLAYING and is_node_ready():
-		pause_game()
+	match what:
+		NOTIFICATION_APPLICATION_FOCUS_OUT, NOTIFICATION_APPLICATION_PAUSED:
+			if is_node_ready():
+				pause_game()
 
 func _continue_campaign() -> void:
 	if campaign.cleared_count == TrailStages.COUNT:

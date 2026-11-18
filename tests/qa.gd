@@ -27,6 +27,7 @@ func _run() -> void:
 	await _test_pickup_display()
 	await _test_menus_and_resets()
 	await _test_touch()
+	await _test_mobile_back_and_suspend()
 	await _test_two_playthroughs()
 	await _test_all_lanterns_reachable_after_shelter()
 	_release_inputs()
@@ -257,6 +258,40 @@ func _test_touch() -> void:
 	game.go_to_menu()
 	game.use_touch = false
 	print("PASS: simulated independent fingers, both release orders, cancel and pause/resume.")
+
+func _test_mobile_back_and_suspend() -> void:
+	_check(not quit_on_go_back, "The game handles system Back before the engine exits.")
+	game.use_touch = true
+	_press_button("Play")
+	await _relocate(Vector2(1600, 543))
+	var player := game.level.player
+	_send_touch(8, &"right", true)
+	_check(player.touch_axis == 1.0, "A direction is held before suspending.")
+	game.hud.show_feedback("Checkpoint reached.", 0.20)
+	game.notification(MainLoop.NOTIFICATION_APPLICATION_PAUSED)
+	_check(game.mode == FogTrail.Mode.PAUSED and player.touch_axis == 0.0,
+		"Suspending pauses gameplay and clears the held touch.")
+	var position_at_pause := player.position
+	await _frames(30)
+	_check(player.position == position_at_pause and game.level.progress.collected_count() == 1,
+		"A suspended attempt keeps the same position and lantern.")
+	root.go_back_requested.emit()
+	_check(game.mode == FogTrail.Mode.PLAYING and player.touch_axis == 0.0,
+		"System Back resumes with no held direction.")
+	_check(game.hud._toast.is_visible_in_tree() and game.hud._toast_text.text == "Checkpoint reached.",
+		"Feedback remains readable after a pause longer than its display time.")
+	await _frames(25)
+	_check(not game.hud._toast.visible, "Feedback expires again during gameplay.")
+	root.go_back_requested.emit()
+	_check(game.mode == FogTrail.Mode.PAUSED, "System Back pauses a running stage.")
+	_press_button("Main Menu")
+	_press_button("Controls")
+	root.go_back_requested.emit()
+	_check(game.mode == FogTrail.Mode.MAIN, "System Back closes Controls.")
+	_press_button("Stage Map")
+	root.go_back_requested.emit()
+	_check(game.mode == FogTrail.Mode.MAIN, "System Back closes the stage map.")
+	game.use_touch = false
 
 func _test_two_playthroughs() -> void:
 	_press_button("Play")

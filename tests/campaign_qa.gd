@@ -113,7 +113,10 @@ func _test_campaign() -> void:
 		return
 	_check(_find_label(game.hud, "To be continued…"), "The summit can be completed again after backtracking.")
 
-	game.go_to_menu()
+	root.go_back_requested.emit()
+	_check(game.mode == FogTrail.Mode.MAP and game.campaign.cleared_count == TrailStages.COUNT,
+		"System Back from the finale opens the map with all clears intact.")
+	root.go_back_requested.emit()
 	game.queue_free()
 	await _frames(2)
 	game = MAIN.instantiate() as FogTrail
